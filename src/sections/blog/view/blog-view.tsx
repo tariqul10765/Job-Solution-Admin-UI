@@ -73,7 +73,8 @@ export function BlogView() {
   const [centerName, setCenterName] = useState<string[]>([]);
   const [circulars, setCirculars] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState({});
-  const [formData, setFormData] = useState<{ title: string, description: string, published_at: string, deadline: string, categories: string[], exam_centers: string[], application_link: string, attachments?: string[] }>({
+  const [formData, setFormData] = useState<{ _id: String, title: string, description: string, published_at: string, deadline: string, categories: string[], exam_centers: string[], application_link: string, attachments?: string[] }>({
+    _id: '',
     title: '',
     description: '',
     published_at: '',
@@ -95,6 +96,7 @@ export function BlogView() {
   const handleClose = () => {
     setSelectedItem({});
     setFormData({
+      _id: '',
       title: '',
       description: '',
       published_at: '',
@@ -171,7 +173,7 @@ export function BlogView() {
         PaperProps={{
           component: 'form',
           title: 'adsd',
-          onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+          onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const formmData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formmData as any).entries());
@@ -183,18 +185,32 @@ export function BlogView() {
               data.append(item[0], item[1]);
               return item;
             });
+
+            console.log('222222222222222222', formJson);
             // https://quiz-app-d6b0.onrender.com
+            const url = `http://localhost:3000/api/circulars/${formData._id ? formData._id : ''}`
             // fetch(`http://localhost:3000/api/circulars`, {
-            fetch(`https://quiz-app-d6b0.onrender.com/api/circulars`, {
-              method: 'POST',
+            await fetch(url, {
+              method: formData._id ? 'PATCH' : 'POST',
               body: data
             })
               .then(res => res.json())
               .then(json => {
-                circulars.unshift(json.data);
-                console.log(_posts)
+                console.log('11111111111111111111111', json);
+                if (!json.success) {
+                  alert(json.message);
+                  return;
+                }
+                if (formData._id) {
+                  const index = circulars.findIndex(item => item._id === formData._id);
+                  circulars[index] = json.data;
+                } else {
+                  circulars.unshift(json.data);
+                }
+                setCirculars([...circulars])
+                handleClose();
+                setTimeout(() => { alert(json.message); }, 500)
               });
-            handleClose();
           },
         }}
       >
