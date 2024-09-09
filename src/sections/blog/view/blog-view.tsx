@@ -188,7 +188,7 @@ export function BlogView() {
 
             console.log('222222222222222222', formJson);
             // https://quiz-app-d6b0.onrender.com
-            const url = `https://quiz-app-d6b0.onrender.com/${formData._id ? formData._id : ''}`
+            const url = `https://quiz-app-d6b0.onrender.com/api/circulars/${formData._id ? formData._id : ''}`
             // fetch(`http://localhost:3000/api/circulars`, {
             await fetch(url, {
               method: formData._id ? 'PATCH' : 'POST',
