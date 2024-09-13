@@ -261,10 +261,10 @@ export function CircularView() {
             variant="standard"
           />
           {/* <Editor editorState={editorState} onChange={setEditorState} /> */}
-          <Box sx={{ mt: 1, mb: 6 }}>
+          <Box sx={{ mt: 1, mb: 10 }}>
             <p>Description</p>
             <ReactQuill
-              style={{ height: '100px', minHeight: '200px' }}
+              style={{ height: '100px', minHeight: '200px', margin: '20px 0' }}
               theme="snow"
               value={formData.description}
               onChange={(e) => handleQuillEditorChange(e)}
