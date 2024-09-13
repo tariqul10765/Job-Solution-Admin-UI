@@ -1,5 +1,5 @@
+import { DashboardContent } from 'src/layouts/dashboard';
 import { useState, useCallback, useEffect } from 'react';
-import { Editor, EditorState } from 'draft-js';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Box from '@mui/material/Box';
@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
 
 import { _posts } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 
@@ -28,8 +27,6 @@ import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-
-// import 'draft-js/dist/Draft.css';
 
 import dayjs from 'dayjs';
 import { PostItem } from '../post-item';
@@ -77,21 +74,10 @@ const categories = [
   'Bank',
   'BCS',
 ];
-const exam_centers = [
-  'Dhaka',
-  'Chittagong',
-  'Khulna',
-  'Barishal',
-  'Noakhali',
-  'Rajshahi',
-  'Cumilla',
-];
 
 export function CircularView() {
   const [sortBy, setSortBy] = useState('latest');
   const [open, setOpen] = useState(false);
-  const [categoryName, setCategoryName] = useState<string[]>([]);
-  const [centerName, setCenterName] = useState<string[]>([]);
   const [circulars, setCirculars] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState({});
   const [formData, setFormData] = useState<FormDataInterface>({
@@ -112,7 +98,6 @@ export function CircularView() {
     application_link: '',
     attachments: []
   });
-  const [quilValue, setQuilValue] = useState('');
 
   const handleSort = useCallback((newSort: string) => {
     setSortBy(newSort);

@@ -32,8 +32,8 @@ export function SignInView() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: email,
-        password: password,
+        email,
+        password,
         role: 'admin'
       })
     })
@@ -43,7 +43,7 @@ export function SignInView() {
         if (json.success) {
           localStorage.setItem('token', json.token);
           router.push('/');
-        }else{
+        } else {
           alert(json.message)
         }
       })

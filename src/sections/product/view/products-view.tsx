@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { DashboardContent } from 'src/layouts/dashboard';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -6,7 +7,6 @@ import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 
 import { _products } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard';
 
 import { ProductItem } from '../product-item';
 import { ProductSort } from '../product-sort';

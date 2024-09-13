@@ -10,6 +10,7 @@ import { _langs, _notifications } from 'src/_mock';
 
 import { Iconify } from 'src/components/iconify';
 
+import { Navigate } from 'react-router-dom';
 import { Main } from './main';
 import { layoutClasses } from '../classes';
 import { NavMobile, NavDesktop } from './nav';
@@ -22,9 +23,6 @@ import { HeaderSection } from '../core/header-section';
 import { AccountPopover } from '../components/account-popover';
 import { LanguagePopover } from '../components/language-popover';
 import { NotificationsPopover } from '../components/notifications-popover';
-import { SignInPage } from 'src/routes/sections';
-import { AuthLayout } from '../auth';
-import { Navigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -46,7 +44,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
   const token = localStorage.getItem('token');
 
   if (!token) {
-    return <Navigate to={'/sign-in'} />
+    return <Navigate to='/sign-in' />
   }
 
   return (
