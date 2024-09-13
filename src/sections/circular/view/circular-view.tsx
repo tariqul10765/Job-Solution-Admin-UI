@@ -1,5 +1,5 @@
 import { DashboardContent } from 'src/layouts/dashboard';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Box from '@mui/material/Box';
@@ -46,7 +46,7 @@ const MenuProps = {
   },
 };
 type FormDataInterface = {
-  _id: String,
+  _id: string,
   title: string,
   description: string,
   organization: string,
@@ -54,7 +54,7 @@ type FormDataInterface = {
   number_of_position: Number | null,
   vacancies: Number | null,
   educational_qualification: string[],
-  exam_center: String,
+  exam_center: string,
   minimum_age: Number | null,
   maximum_age: Number | null,
   published_at: Date,
@@ -160,8 +160,16 @@ export function CircularView() {
       description: e
     });
   }
+  const paperRef = useRef<any>(null); // Reference to the Paper element
 
   useEffect(() => {
+    if (paperRef.current) {
+      const dialogContent = paperRef.current.querySelector('.MuiPaper-root');
+      if (dialogContent) {
+        // Scroll to the top of the content
+        dialogContent.scrollTop = 0;
+      }
+    }
     console.log('----------------', _posts);
     // fetch('http://localhost:3000/api/circulars')
     fetch('https://quiz-app-d6b0.onrender.com/api/circulars')
@@ -190,7 +198,9 @@ export function CircularView() {
         onClose={handleClose}
         PaperProps={{
           component: 'form',
-          title: 'adsd',
+          ref: paperRef, // Attach the ref to the Paper element
+          // style: { maxHeight: '500px', overflowY: 'auto' },
+          // title: 'adsd',
           onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const formmData = new FormData(event.currentTarget);
@@ -254,7 +264,7 @@ export function CircularView() {
           <Box sx={{ mt: 1, mb: 6 }}>
             <p>Description</p>
             <ReactQuill
-              style={{ height: '100px', minHeight: '80px' }}
+              style={{ height: '100px', minHeight: '200px' }}
               theme="snow"
               value={formData.description}
               onChange={(e) => handleQuillEditorChange(e)}
@@ -287,8 +297,8 @@ export function CircularView() {
             id="name"
             value={formData.job_type}
             onChange={(e) => handleChange(e)}
-            name="job_type "
-            label="Job Type "
+            name="job_type"
+            label="Job Type"
             fullWidth
             variant="standard"
           />
@@ -361,6 +371,7 @@ export function CircularView() {
             onChange={(e) => handleChange(e)}
             name="minimum_age"
             label="Minimum Age"
+            type='number'
             fullWidth
             variant="standard"
           />
@@ -372,6 +383,7 @@ export function CircularView() {
             onChange={(e) => handleChange(e)}
             name="maximum_age"
             label="Maximum Age"
+            type='number'
             fullWidth
             variant="standard"
           />
