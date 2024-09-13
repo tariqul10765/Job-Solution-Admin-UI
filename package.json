@@ -35,15 +35,18 @@
     "@mui/x-date-pickers": "^7.16.0",
     "apexcharts": "^3.52.0",
     "dayjs": "^1.11.13",
+    "draft-js": "^0.11.7",
     "history": "^5.3.0",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.26.1",
     "simplebar-react": "^3.2.6"
   },
   "devDependencies": {
+    "@types/draft-js": "^0.11.18",
     "@types/node": "^22.5.0",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",

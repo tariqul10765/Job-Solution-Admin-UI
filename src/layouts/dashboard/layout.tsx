@@ -22,6 +22,9 @@ import { HeaderSection } from '../core/header-section';
 import { AccountPopover } from '../components/account-popover';
 import { LanguagePopover } from '../components/language-popover';
 import { NotificationsPopover } from '../components/notifications-popover';
+import { SignInPage } from 'src/routes/sections';
+import { AuthLayout } from '../auth';
+import { Navigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +42,12 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
   const [navOpen, setNavOpen] = useState(false);
 
   const layoutQuery: Breakpoint = 'lg';
+
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    return <Navigate to={'/sign-in'} />
+  }
 
   return (
     <LayoutSection

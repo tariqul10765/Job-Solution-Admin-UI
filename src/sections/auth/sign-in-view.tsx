@@ -18,11 +18,36 @@ import { Iconify } from 'src/components/iconify';
 export function SignInView() {
   const router = useRouter();
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = useCallback(() => {
-    router.push('/');
-  }, [router]);
+    // akarman36@gmail.com
+    // console.log(email, password)
+    const url = `https://quiz-app-d6b0.onrender.com/api/admin/login`;
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        role: 'admin'
+      })
+    })
+      .then(res => res.json())
+      .then(json => {
+        console.log('admin data', json);
+        if (json.success) {
+          localStorage.setItem('token', json.token);
+          router.push('/');
+        }else{
+          alert(json.message)
+        }
+      })
+  }, [router, email, password]);
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
@@ -30,9 +55,10 @@ export function SignInView() {
         fullWidth
         name="email"
         label="Email address"
-        defaultValue="hello@gmail.com"
+        // defaultValue="hello@gmail.com"
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
@@ -43,7 +69,7 @@ export function SignInView() {
         fullWidth
         name="password"
         label="Password"
-        defaultValue="@demo1234"
+        // defaultValue="@demo1234"
         InputLabelProps={{ shrink: true }}
         type={showPassword ? 'text' : 'password'}
         InputProps={{
@@ -56,6 +82,7 @@ export function SignInView() {
           ),
         }}
         sx={{ mb: 3 }}
+        onChange={(e) => setPassword(e.target.value)}
       />
 
       <LoadingButton

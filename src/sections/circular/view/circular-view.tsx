@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-
+import { Editor, EditorState } from 'draft-js';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -27,7 +29,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-
+// import 'draft-js/dist/Draft.css';
 
 import dayjs from 'dayjs';
 import { PostItem } from '../post-item';
@@ -46,6 +48,25 @@ const MenuProps = {
     },
   },
 };
+type FormDataInterface = {
+  _id: String,
+  title: string,
+  description: string,
+  organization: string,
+  job_type: string,
+  number_of_position: Number | null,
+  vacancies: Number | null,
+  educational_qualification: string[],
+  exam_center: String,
+  minimum_age: Number | null,
+  maximum_age: Number | null,
+  published_at: Date,
+  application_start: Date,
+  application_end: Date,
+  application_link: string,
+  attachments?: string[]
+}
+
 
 const categories = [
   'HSC',
@@ -66,24 +87,32 @@ const exam_centers = [
   'Cumilla',
 ];
 
-export function BlogView() {
+export function CircularView() {
   const [sortBy, setSortBy] = useState('latest');
   const [open, setOpen] = useState(false);
   const [categoryName, setCategoryName] = useState<string[]>([]);
   const [centerName, setCenterName] = useState<string[]>([]);
   const [circulars, setCirculars] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState({});
-  const [formData, setFormData] = useState<{ _id: String, title: string, description: string, published_at: string, deadline: string, categories: string[], exam_centers: string[], application_link: string, attachments?: string[] }>({
+  const [formData, setFormData] = useState<FormDataInterface>({
     _id: '',
     title: '',
     description: '',
-    published_at: '',
-    deadline: '',
-    categories: [],
-    exam_centers: [],
+    organization: '',
+    job_type: '',
+    number_of_position: null,
+    vacancies: null,
+    educational_qualification: [],
+    exam_center: '',
+    minimum_age: null,
+    maximum_age: null,
+    published_at: new Date(),
+    application_start: new Date(),
+    application_end: new Date(),
     application_link: '',
     attachments: []
   });
+  const [quilValue, setQuilValue] = useState('');
 
   const handleSort = useCallback((newSort: string) => {
     setSortBy(newSort);
@@ -99,32 +128,30 @@ export function BlogView() {
       _id: '',
       title: '',
       description: '',
-      published_at: '',
-      deadline: '',
-      categories: [],
-      exam_centers: [],
+      organization: '',
+      job_type: '',
+      number_of_position: null,
+      vacancies: null,
+      educational_qualification: [],
+      exam_center: '',
+      minimum_age: null,
+      maximum_age: null,
+      published_at: new Date(),
+      application_start: new Date(),
+      application_end: new Date(),
       application_link: '',
       attachments: []
     });
     setOpen(false);
   };
 
-  const handleCategoryChange = (event: SelectChangeEvent<typeof formData.categories>) => {
+  const handleCategoryChange = (event: SelectChangeEvent<typeof formData.educational_qualification>) => {
     const {
       target: { value },
     } = event;
     setFormData({
       ...formData,
-      categories: typeof value === 'string' ? value.split(',') : value,
-    });
-  };
-  const handleCenterChange = (event: SelectChangeEvent<typeof centerName>) => {
-    const {
-      target: { value },
-    } = event;
-    setFormData({
-      ...formData,
-      exam_centers: typeof value === 'string' ? value.split(',') : value,
+      educational_qualification: typeof value === 'string' ? value.split(',') : value,
     });
   };
 
@@ -140,6 +167,12 @@ export function BlogView() {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
+    });
+  }
+  const handleQuillEditorChange = (e: any) => {
+    setFormData({
+      ...formData,
+      description: e
     });
   }
 
@@ -177,16 +210,17 @@ export function BlogView() {
             event.preventDefault();
             const formmData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formmData as any).entries());
-            console.log('===========', formData);
-            console.log('===========', formJson);
+            // console.log('===========', formData);
+            // console.log('===========', formJson);
 
             const data = new FormData();
+            data.append('description', formData.description)
             Object.entries(formJson)?.map(item => {
               data.append(item[0], item[1]);
               return item;
             });
 
-            console.log('222222222222222222', formJson);
+            console.log('222222222222222222', formJson, formData.description);
             // https://quiz-app-d6b0.onrender.com
             const url = `https://quiz-app-d6b0.onrender.com/api/circulars/${formData._id ? formData._id : ''}`
             // fetch(`http://localhost:3000/api/circulars`, {
@@ -223,12 +257,42 @@ export function BlogView() {
             value={formData.title}
             onChange={(e) => handleChange(e)}
             autoFocus
-            required
+            // required
             margin="dense"
             id="name"
             name="title"
             label="Title"
-            type="text"
+            fullWidth
+            variant="standard"
+          />
+          {/* <Editor editorState={editorState} onChange={setEditorState} /> */}
+          <Box sx={{ mt: 1, mb: 6 }}>
+            <p>Description</p>
+            <ReactQuill
+              style={{ height: '100px', minHeight: '80px' }}
+              theme="snow"
+              value={formData.description}
+              onChange={(e) => handleQuillEditorChange(e)}
+              modules={{
+                toolbar: [
+                  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                  ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+                  ['link', 'image'],
+                  ['clean']
+                ],
+              }}
+              tabIndex={0} />
+          </Box>
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            value={formData.organization}
+            onChange={(e) => handleChange(e)}
+            name="organization"
+            label="Organization"
             fullWidth
             variant="standard"
           />
@@ -236,13 +300,93 @@ export function BlogView() {
             autoFocus
             margin="dense"
             id="name"
-            value={formData.description}
+            value={formData.job_type}
             onChange={(e) => handleChange(e)}
-            name="description"
-            label="Description"
-            type="text"
-            multiline
-            rows={4}
+            name="job_type "
+            label="Job Type "
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            value={formData.number_of_position}
+            onChange={(e) => handleChange(e)}
+            name="number_of_position"
+            label="Number Of Position"
+            type='number'
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            value={formData.vacancies}
+            onChange={(e) => handleChange(e)}
+            name="vacancies"
+            label="Vacancies"
+            type='number'
+            fullWidth
+            variant="standard"
+          />
+          <FormControl
+            variant="standard"
+            sx={{ my: 1, minWidth: '100%' }}
+          // required
+          >
+            <InputLabel id="demo-multiple-checkbox-label" variant="standard">Educational Qualification</InputLabel>
+            <Select
+              labelId="demo-multiple-checkbox-label"
+              id="demo-multiple-checkbox"
+              name="educational_qualification"
+              value={formData.educational_qualification}
+              multiple
+              // value={categoryName}
+              onChange={handleCategoryChange}
+              renderValue={(selected) => selected.join(',')}
+              MenuProps={MenuProps}
+              fullWidth
+            >
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  <Checkbox checked={formData.educational_qualification.indexOf(category) > -1} />
+                  <ListItemText primary={category} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            value={formData.exam_center}
+            onChange={(e) => handleChange(e)}
+            name="exam_center"
+            label="exam_center"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            value={formData.minimum_age}
+            onChange={(e) => handleChange(e)}
+            name="minimum_age"
+            label="Minimum Age"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            value={formData.maximum_age}
+            onChange={(e) => handleChange(e)}
+            name="maximum_age"
+            label="Maximum Age"
             fullWidth
             variant="standard"
           />
@@ -258,87 +402,45 @@ export function BlogView() {
                 slotProps={{
                   textField: {
                     variant: "standard",
-                    required: true
+                    // required: true
                   }
                 }} />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker sx={{ my: 1, minWidth: '100%' }}
-                label="Deadline"
-                name="deadline"
-                value={dayjs(formData.deadline)}
+                label="Application Start Date"
+                name="application_start"
+                value={dayjs(formData.application_start)}
                 slotProps={{
                   textField: {
                     variant: "standard",
-                    required: true
+                    // required: true
+                  }
+                }} />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker sx={{ my: 1, minWidth: '100%' }}
+                label="Application End Date"
+                name="application_end "
+                value={dayjs(formData.application_end)}
+                slotProps={{
+                  textField: {
+                    variant: "standard",
+                    // required: true
                   }
                 }} />
             </LocalizationProvider>
           </div>
 
-          <FormControl
-            variant="standard"
-            sx={{ my: 1, minWidth: '100%' }}
-            required
-          >
-            <InputLabel id="demo-multiple-checkbox-label" variant="standard">Categories</InputLabel>
-            <Select
-              labelId="demo-multiple-checkbox-label"
-              id="demo-multiple-checkbox"
-              name="categories"
-              value={formData.categories}
-              multiple
-              // value={categoryName}
-              onChange={handleCategoryChange}
-              renderValue={(selected) => selected.join(',')}
-              MenuProps={MenuProps}
-              fullWidth
-            >
-              {categories.map((category) => (
-                <MenuItem key={category} value={category}>
-                  <Checkbox checked={formData.categories.indexOf(category) > -1} />
-                  <ListItemText primary={category} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl
-            variant="standard"
-            sx={{ my: 1, minWidth: '100%' }}
-            required
-          >
-            <InputLabel id="demo-multiple-checkbox-label" variant="standard">Exam Centers</InputLabel>
-            <Select
-              labelId="demo-multiple-checkbox-label"
-              id="demo-multiple-checkbox"
-              name="exam_centers"
-              value={formData.exam_centers}
-              multiple
-              // value={centerName}
-              onChange={handleCenterChange}
-              renderValue={(selected) => selected.join(',')}
-              MenuProps={MenuProps}
-              fullWidth
-            >
-              {exam_centers.map((exam_center) => (
-                <MenuItem key={exam_center} value={exam_center}>
-                  <Checkbox checked={formData.exam_centers.indexOf(exam_center) > -1} />
-                  <ListItemText primary={exam_center} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
           <TextField
             autoFocus
-            required
+            // required
             margin="dense"
             id="name"
             name="application_link"
             value={formData.application_link}
             onChange={(e) => handleChange(e)}
             label="Application Link"
-            type="text"
             fullWidth
             variant="standard"
           />

@@ -29,18 +29,18 @@ export const navData = [
     ),
   },
   {
-    title: 'Blog',
-    path: '/blog',
+    title: 'Job Circular',
+    path: '/circular',
     icon: icon('ic-blog'),
   },
-  {
-    title: 'Sign in',
-    path: '/sign-in',
-    icon: icon('ic-lock'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic-disabled'),
-  },
+  // {
+  //   title: 'Sign in',
+  //   path: '/sign-in',
+  //   icon: icon('ic-lock'),
+  // },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: icon('ic-disabled'),
+  // },
 ];
