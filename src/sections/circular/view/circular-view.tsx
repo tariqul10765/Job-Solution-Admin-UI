@@ -60,19 +60,32 @@ type FormDataInterface = {
   published_at: Date,
   application_start: Date,
   application_end: Date,
+  source: string,
+  official_website: string,
   application_link: string,
   attachments?: string[]
 }
 
 
-const categories = [
-  'HSC',
-  'Graduate',
-  'Post Graduate',
-  'Railway',
-  'Wasa',
-  'Bank',
-  'BCS',
+const educational_qualification = [
+  'অষ্টম শ্রেণী', 
+  'এসএসসি', 
+  'এইচ এস সি', 
+  'স্নাতক', 
+  'স্নাতক সমান', 
+  'স্নাতকোত্তর', 
+  'ডিগ্রি', 
+  'বিবিএ', 
+  'এমবিএ', 
+  'বিএ', 
+  'বিএসসি', 
+  'বিকম', 
+  'এম এ', 
+  'মাস্টার্স', 
+  'ডিপ্লোমা/ইঞ্জিনিয়ারিং/নার্সিং', 
+  'এমবিবিএস', 
+  'পিএইচডি', 
+  'আই বি এ'
 ];
 
 export function CircularView() {
@@ -95,6 +108,8 @@ export function CircularView() {
     published_at: new Date(),
     application_start: new Date(),
     application_end: new Date(),
+    source: '',
+    official_website: '',
     application_link: '',
     attachments: []
   });
@@ -124,6 +139,8 @@ export function CircularView() {
       published_at: new Date(),
       application_start: new Date(),
       application_end: new Date(),
+      source: '',
+      official_website: '',
       application_link: '',
       attachments: []
     });
@@ -139,6 +156,13 @@ export function CircularView() {
       educational_qualification: typeof value === 'string' ? value.split(',') : value,
     });
   };
+  const handleJobTypeChange = (e: any) => {
+    console.log(e.target.value);
+    setFormData({
+      ...formData,
+      job_type: e.target.value,
+    });
+  }
 
   const handleUpdate = (existingData: any) => {
     console.log(existingData);
@@ -291,7 +315,7 @@ export function CircularView() {
             fullWidth
             variant="standard"
           />
-          <TextField
+          {/* <TextField
             autoFocus
             margin="dense"
             id="name"
@@ -301,7 +325,31 @@ export function CircularView() {
             label="Job Type"
             fullWidth
             variant="standard"
-          />
+          /> */}
+          <FormControl
+            variant="standard"
+            sx={{ my: 1, minWidth: '100%' }}
+          // required
+          >
+            <InputLabel id="demo-multiple-checkbox-label" variant="standard">Job Type</InputLabel>
+            <Select
+              labelId="demo-multiple-checkbox-label"
+              id="demo-multiple-checkbox"
+              name="job_type"
+              value={formData.job_type}
+              onChange={handleJobTypeChange}
+              MenuProps={MenuProps}
+              fullWidth
+            >
+              {['সরকারি', 'বেসরকারি'].map((category) => (
+                // <Option value={category}>{category}</Option>
+                <MenuItem key={category} value={category}>
+                  {/* <Checkbox checked={formData.educational_qualification.indexOf(category) > -1} /> */}
+                  <ListItemText primary={category} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             autoFocus
             margin="dense"
@@ -344,7 +392,7 @@ export function CircularView() {
               MenuProps={MenuProps}
               fullWidth
             >
-              {categories.map((category) => (
+              {educational_qualification.map((category) => (
                 <MenuItem key={category} value={category}>
                   <Checkbox checked={formData.educational_qualification.indexOf(category) > -1} />
                   <ListItemText primary={category} />
@@ -429,6 +477,30 @@ export function CircularView() {
             </LocalizationProvider>
           </div>
 
+          <TextField
+            autoFocus
+            // required
+            margin="dense"
+            id="name"
+            name="source"
+            value={formData.source}
+            onChange={(e) => handleChange(e)}
+            label="Source"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            // required
+            margin="dense"
+            id="name"
+            name="official_website"
+            value={formData.official_website}
+            onChange={(e) => handleChange(e)}
+            label="Official Website"
+            fullWidth
+            variant="standard"
+          />
           <TextField
             autoFocus
             // required
