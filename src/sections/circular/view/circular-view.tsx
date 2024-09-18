@@ -68,51 +68,52 @@ type FormDataInterface = {
 
 
 const educational_qualification = [
-  'অষ্টম শ্রেণী', 
-  'এসএসসি', 
-  'এইচ এস সি', 
-  'স্নাতক', 
-  'স্নাতক সমান', 
-  'স্নাতকোত্তর', 
-  'ডিগ্রি', 
-  'বিবিএ', 
-  'এমবিএ', 
-  'বিএ', 
-  'বিএসসি', 
-  'বিকম', 
-  'এম এ', 
-  'মাস্টার্স', 
-  'ডিপ্লোমা/ইঞ্জিনিয়ারিং/নার্সিং', 
-  'এমবিবিএস', 
-  'পিএইচডি', 
+  'অষ্টম শ্রেণী',
+  'এসএসসি',
+  'এইচ এস সি',
+  'স্নাতক',
+  'স্নাতক সমান',
+  'স্নাতকোত্তর',
+  'ডিগ্রি',
+  'বিবিএ',
+  'এমবিএ',
+  'বিএ',
+  'বিএসসি',
+  'বিকম',
+  'এম এ',
+  'মাস্টার্স',
+  'ডিপ্লোমা/ইঞ্জিনিয়ারিং/নার্সিং',
+  'এমবিবিএস',
+  'পিএইচডি',
   'আই বি এ'
 ];
+const initialFormData = {
+  _id: '',
+  title: '',
+  description: '',
+  organization: '',
+  job_type: '',
+  number_of_position: null,
+  vacancies: null,
+  educational_qualification: [],
+  exam_center: '',
+  minimum_age: null,
+  maximum_age: null,
+  published_at: new Date(),
+  application_start: new Date(),
+  application_end: new Date(),
+  source: '',
+  official_website: '',
+  application_link: '',
+  attachments: []
+}
 
 export function CircularView() {
   const [sortBy, setSortBy] = useState('latest');
   const [open, setOpen] = useState(false);
   const [circulars, setCirculars] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState({});
-  const [formData, setFormData] = useState<FormDataInterface>({
-    _id: '',
-    title: '',
-    description: '',
-    organization: '',
-    job_type: '',
-    number_of_position: null,
-    vacancies: null,
-    educational_qualification: [],
-    exam_center: '',
-    minimum_age: null,
-    maximum_age: null,
-    published_at: new Date(),
-    application_start: new Date(),
-    application_end: new Date(),
-    source: '',
-    official_website: '',
-    application_link: '',
-    attachments: []
-  });
+  const [formData, setFormData] = useState<FormDataInterface>(initialFormData);
 
   const handleSort = useCallback((newSort: string) => {
     setSortBy(newSort);
@@ -123,28 +124,12 @@ export function CircularView() {
   };
 
   const handleClose = () => {
+    console.log('======================');
     setSelectedItem({});
-    setFormData({
-      _id: '',
-      title: '',
-      description: '',
-      organization: '',
-      job_type: '',
-      number_of_position: null,
-      vacancies: null,
-      educational_qualification: [],
-      exam_center: '',
-      minimum_age: null,
-      maximum_age: null,
-      published_at: new Date(),
-      application_start: new Date(),
-      application_end: new Date(),
-      source: '',
-      official_website: '',
-      application_link: '',
-      attachments: []
-    });
     setOpen(false);
+    setFormData(initialFormData);
+    setFormData((prev: FormDataInterface) => ({ ...initialFormData }));
+    console.log(formData, initialFormData);
   };
 
   const handleCategoryChange = (event: SelectChangeEvent<typeof formData.educational_qualification>) => {
@@ -269,9 +254,6 @@ export function CircularView() {
       >
         <DialogTitle>Circular</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Please enter your email address here.
-          </DialogContentText>
           <TextField
             value={formData.title}
             onChange={(e) => handleChange(e)}
@@ -407,7 +389,7 @@ export function CircularView() {
             value={formData.exam_center}
             onChange={(e) => handleChange(e)}
             name="exam_center"
-            label="exam_center"
+            label="Exam Center"
             fullWidth
             variant="standard"
           />
@@ -526,7 +508,7 @@ export function CircularView() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Create</Button>
+          <Button type="submit">{formData._id ? 'Update' : 'Create'}</Button>
         </DialogActions>
       </Dialog>
 
