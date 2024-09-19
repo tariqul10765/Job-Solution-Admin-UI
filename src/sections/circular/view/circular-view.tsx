@@ -1,5 +1,5 @@
 import { DashboardContent } from 'src/layouts/dashboard';
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useReducer } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Box from '@mui/material/Box';
@@ -114,6 +114,9 @@ export function CircularView() {
   const [circulars, setCirculars] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState({});
   const [formData, setFormData] = useState<FormDataInterface>(initialFormData);
+  const [, forceUpdate] = useReducer((x: any) => x + 1, 0);
+  const inputRef = useRef(null);
+  let interval: any;
 
   const handleSort = useCallback((newSort: string) => {
     setSortBy(newSort);
@@ -125,10 +128,14 @@ export function CircularView() {
 
   const handleClose = () => {
     console.log('======================');
+    // clearInterval(interval);
     setSelectedItem({});
     setOpen(false);
-    setFormData(initialFormData);
-    setFormData((prev: FormDataInterface) => ({ ...initialFormData }));
+    setFormData({ ...initialFormData });
+    setTimeout(() => {
+      console.log('Enter interval');
+      setFormData({ ...initialFormData });
+    }, 10);
     console.log(formData, initialFormData);
   };
 
@@ -151,6 +158,7 @@ export function CircularView() {
 
   const handleUpdate = (existingData: any) => {
     console.log(existingData);
+    // clearInterval(interval);
     setFormData({ ...formData, ...existingData });
     setSelectedItem(existingData);
     handleClickOpen();
@@ -226,7 +234,8 @@ export function CircularView() {
 
             console.log('222222222222222222', formJson, formData.description);
             // https://quiz-app-d6b0.onrender.com
-            const url = `https://quiz-app-d6b0.onrender.com/api/circulars/${formData._id ? formData._id : ''}`
+            // const url = `https://quiz-app-d6b0.onrender.com/api/circulars/${formData._id ? formData._id : ''}`
+            const url = `http://localhost:3000/api/circulars/${formData._id ? formData._id : ''}`
             // fetch(`http://localhost:3000/api/circulars`, {
             await fetch(url, {
               method: formData._id ? 'PATCH' : 'POST',
@@ -258,7 +267,7 @@ export function CircularView() {
             value={formData.title}
             onChange={(e) => handleChange(e)}
             autoFocus
-            // required
+            required
             margin="dense"
             id="name"
             name="title"
@@ -287,6 +296,7 @@ export function CircularView() {
           </Box>
 
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
@@ -333,6 +343,7 @@ export function CircularView() {
             </Select>
           </FormControl>
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
@@ -345,6 +356,7 @@ export function CircularView() {
             variant="standard"
           />
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
@@ -359,7 +371,7 @@ export function CircularView() {
           <FormControl
             variant="standard"
             sx={{ my: 1, minWidth: '100%' }}
-          // required
+            required
           >
             <InputLabel id="demo-multiple-checkbox-label" variant="standard">Educational Qualification</InputLabel>
             <Select
@@ -394,6 +406,7 @@ export function CircularView() {
             variant="standard"
           />
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
@@ -406,6 +419,7 @@ export function CircularView() {
             variant="standard"
           />
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
@@ -429,7 +443,7 @@ export function CircularView() {
                 slotProps={{
                   textField: {
                     variant: "standard",
-                    // required: true
+                    required: true
                   }
                 }} />
             </LocalizationProvider>
@@ -441,19 +455,19 @@ export function CircularView() {
                 slotProps={{
                   textField: {
                     variant: "standard",
-                    // required: true
+                    required: true
                   }
                 }} />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker sx={{ my: 1, minWidth: '100%' }}
                 label="Application End Date"
-                name="application_end "
+                name="application_end"
                 value={dayjs(formData.application_end)}
                 slotProps={{
                   textField: {
                     variant: "standard",
-                    // required: true
+                    required: true
                   }
                 }} />
             </LocalizationProvider>
@@ -461,7 +475,7 @@ export function CircularView() {
 
           <TextField
             autoFocus
-            // required
+            required
             margin="dense"
             id="name"
             name="source"
@@ -485,7 +499,7 @@ export function CircularView() {
           />
           <TextField
             autoFocus
-            // required
+            required
             margin="dense"
             id="name"
             name="application_link"
@@ -544,3 +558,4 @@ export function CircularView() {
     </DashboardContent>
   );
 }
+
